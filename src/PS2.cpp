@@ -14,6 +14,8 @@ boolean startOpen = false;
 boolean selectPress = false;
 boolean selectOpen = false;
 
+int joyLX, joyLY, joyRX, joyRY;
+
 void ps2Init(void){
     // Attach the PS2 controller to the pins
     int error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
@@ -38,38 +40,32 @@ void ps2Deal(void *pvParameters){
         if(ps2x.Button(PSB_START) && startPress == false){
             startPress = true;
             startOpen = !startOpen;
-            Serial.printf("Start Key is ");
-            Serial.println(startOpen);
+            if(startOpen == true){
+              
+            }
+            // Serial.printf("Start Key is ");
+            // Serial.println(startOpen);
+
             }
         else if(startPress == true && !ps2x.Button(PSB_START)){startPress = false;}
 
         if(ps2x.Button(PSB_SELECT) && selectPress == false){
             selectPress = true;
             selectOpen = !selectOpen;
-            Serial.printf("Select Key is ");
-            Serial.println(selectOpen);
+            // Serial.printf("Select Key is ");
+            // Serial.println(selectOpen);
             }
         else if(selectPress == true && !ps2x.Button(PSB_SELECT)){selectPress = false;}
 
-
-
-
-
         // Read the analog joystick values
-        int joyX = ps2x.Analog(PSS_LX);
-        int joyY = ps2x.Analog(PSS_LY);
-        int joyRX = ps2x.Analog(PSS_RX);
-        int joyRY = ps2x.Analog(PSS_RY);
+        joyLX = ps2x.Analog(PSS_LX) - 128;
+        joyLY = -(ps2x.Analog(PSS_LY) - 128);
+        joyRX = ps2x.Analog(PSS_RX) - 128;
+        joyRY = -(ps2x.Analog(PSS_RY) - 128);
 
         // Print the joystick values
-        Serial.print("Left Joystick (X, Y): ");
-        Serial.print(joyX);
-        Serial.print(", ");
-        Serial.print(joyY);
-        Serial.print(" | Right Joystick (X, Y): ");
-        Serial.print(joyRX);
-        Serial.print(", ");
-        Serial.println(joyRY);
+        Serial.print("Left Joystick (X, Y): ");Serial.print(joyLX);Serial.print(", ");Serial.print(joyLY);
+        Serial.print(" | Right Joystick (X, Y): ");Serial.print(joyRX);Serial.print(", ");Serial.println(joyRY);
     }
     delay(10);
 }

@@ -8,6 +8,13 @@
 #define PS2_CLK 18
 #define PS2_SEL  5
 
+#define RED     17
+#define GREEN   16
+#define BLUE     4
+
+extern int joyLX, joyLY, joyRX, joyRY;
+
+void ledInit(void);
 void ps2Init(void);
 void ps2Deal(void *pvParameters);
 
