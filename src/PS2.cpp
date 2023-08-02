@@ -8,56 +8,68 @@ int error = 0;
 byte type = 0;
 byte vibrate = 0;
 
+boolean startPress = false;
+boolean startOpen = false;
+
+boolean selectPress = false;
+boolean selectOpen = false;
 
 void ps2Init(void){
-//setup pins and settings: GamePad(clock, command, attention, data, Pressures?, Rumble?) check for error
-  error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
-  
-  if(error == 0){
-    Serial.print("Found Controller, configured successful ");
-    Serial.print("pressures = ");
-	if (pressures)
-	  Serial.println("true ");
-	else
-	  Serial.println("false");
-	Serial.print("rumble = ");
-	if (rumble)
-	  Serial.println("true)");
-	else
-	  Serial.println("false");
-    Serial.println("Try out all the buttons, X will vibrate the controller, faster as you press harder;");
-    Serial.println("holding L1 or R1 will print out the analog stick values.");
-    Serial.println("Note: Go to www.billporter.info for updates and to report bugs.");
-  }  
-  else if(error == 1)
-    Serial.println("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips");
-   
-  else if(error == 2)
-    Serial.println("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips");
-
-  else if(error == 3)
-    Serial.println("Controller refusing to enter Pressures mode, may not support it. ");
-  
-  type = ps2x.readType(); 
-  switch(type) {
-    case 0:
-      Serial.println("Unknown Controller type found ");
-      break;
-    case 1:
-      Serial.println("DualShock Controller found ");
-      break;
-    case 2:
-      Serial.println("GuitarHero Controller found ");
-      break;
-	case 3:
-      Serial.println("Wireless Sony DualShock Controller found ");
-      break;
-    }
+    // Attach the PS2 controller to the pins
+    int error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
+      if (error == 0) {
+        Serial.println("PS2 Controller Connected!");
+        Serial.println("Ready to read input.");
+      } else {
+      Serial.println("No controller found, check wiring.");
+      while (true) {
+        delay(1000);
+      }
+  }
 }
 
 void ps2Deal(void *pvParameters){
     while(1){
-        
+        // Read the PS2 controller input
+        ps2x.read_gamepad(false, 0);
+
+        // Check if any button is pressed
+
+        if(ps2x.Button(PSB_START) && startPress == false){
+            startPress = true;
+            startOpen = !startOpen;
+            Serial.printf("Start Key is ");
+            Serial.println(startOpen);
+            }
+        else if(startPress == true && !ps2x.Button(PSB_START)){startPress = false;}
+
+        if(ps2x.Button(PSB_SELECT) && selectPress == false){
+            selectPress = true;
+            selectOpen = !selectOpen;
+            Serial.printf("Select Key is ");
+            Serial.println(selectOpen);
+            }
+        else if(selectPress == true && !ps2x.Button(PSB_SELECT)){selectPress = false;}
+
+
+
+
+
+        // Read the analog joystick values
+        int joyX = ps2x.Analog(PSS_LX);
+        int joyY = ps2x.Analog(PSS_LY);
+        int joyRX = ps2x.Analog(PSS_RX);
+        int joyRY = ps2x.Analog(PSS_RY);
+
+        // Print the joystick values
+        Serial.print("Left Joystick (X, Y): ");
+        Serial.print(joyX);
+        Serial.print(", ");
+        Serial.print(joyY);
+        Serial.print(" | Right Joystick (X, Y): ");
+        Serial.print(joyRX);
+        Serial.print(", ");
+        Serial.println(joyRY);
     }
     delay(10);
 }

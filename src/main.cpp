@@ -2,7 +2,8 @@
 
 void setup() {
     Serial.begin(115200);
-    imuInit();
+    ps2Init();
+    // imuInit();
     taskInit();
 }
 

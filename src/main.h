@@ -52,7 +52,7 @@ void taskInit(){
     // xTaskCreate(fan2Control,    "task2_task",TASK2_STK_SIZE,NULL,TASK2_TASK_PRIO,NULL);
     // xTaskCreate(fan3Control,    "task3_task",TASK3_STK_SIZE,NULL,TASK3_TASK_PRIO,NULL);
     // xTaskCreate(fan4Control,    "task4_task",TASK4_STK_SIZE,NULL,TASK4_TASK_PRIO,NULL);
-    // xTaskCreate(ps2Deal,        "task5_task",TASK5_STK_SIZE,NULL,TASK5_TASK_PRIO,NULL);
+    xTaskCreate(ps2Deal,        "task5_task",TASK5_STK_SIZE,NULL,TASK5_TASK_PRIO,NULL);
     // xTaskCreate(imuDeal,        "task6_task",TASK6_STK_SIZE,NULL,TASK6_TASK_PRIO,NULL);
     // xTaskCreate(rollPID,        "task7_task",TASK7_STK_SIZE,NULL,TASK7_TASK_PRIO,NULL);
     // xTaskCreate(pitchPID,       "task8_task",TASK8_STK_SIZE,NULL,TASK8_TASK_PRIO,NULL);
