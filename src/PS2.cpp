@@ -59,4 +59,5 @@ void ps2Deal(void *pvParameters){
     while(1){
         
     }
+    delay(10);
 }
