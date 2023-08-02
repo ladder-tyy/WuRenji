@@ -3,6 +3,10 @@
 #define pressures   true
 #define rumble      true
 
+#define MID         128
+#define ANGLE       60
+#define SPEED       2000
+
 PS2X ps2x;
 int error = 0;
 byte type = 0;
@@ -15,6 +19,7 @@ boolean selectPress = false;
 boolean selectOpen = false;
 
 int joyLX, joyLY, joyRX, joyRY;
+int angLX, angLY, spdRY;
 
 void ledInit(void){
     pinMode(RED,    OUTPUT);
@@ -75,14 +80,20 @@ void ps2Deal(void *pvParameters){
         else if(selectPress == true && !ps2x.Button(PSB_SELECT)){selectPress = false;}
 
         // Read the analog joystick values
-        joyLX = ps2x.Analog(PSS_LX) - 128;
-        joyLY = -(ps2x.Analog(PSS_LY) - 128);
-        joyRX = ps2x.Analog(PSS_RX) - 128;
-        joyRY = -(ps2x.Analog(PSS_RY) - 128);
+        joyLX = ps2x.Analog(PSS_LX) - MID;
+        joyLY = -(ps2x.Analog(PSS_LY) - MID);
+        joyRX = ps2x.Analog(PSS_RX) - MID;
+        joyRY = -(ps2x.Analog(PSS_RY) - MID);
+
+        angLX = map(joyLX, 0, 255, 0, ANGLE);
+        angLY = map(joyLY, 0, 255, 0, ANGLE);
+        spdRY = map(joyRY, 0, 255, 0, SPEED) - 3;
 
         // Print the joystick values
-        Serial.print("Left Joystick (X, Y): ");Serial.print(joyLX);Serial.print(", ");Serial.print(joyLY);
-        Serial.print(" | Right Joystick (X, Y): ");Serial.print(joyRX);Serial.print(", ");Serial.println(joyRY);
+        // Serial.print("Left Joystick (X, Y): ");Serial.print(joyLX);Serial.print(", ");Serial.print(joyLY);
+        Serial.print("Left JoyAngle (X, Y): ");Serial.print(angLX);Serial.print(", ");Serial.print(angLY);
+        Serial.print(" | Right Joystick (X, Y): ");Serial.print(joyRX);Serial.print(", ");Serial.println(spdRY);
     }
     delay(10);
 }
+

@@ -30,7 +30,7 @@ void pwmInit(void){
 
 void fan1Control(void *pvParameters){
     while(1){
-       
+       ledcWrite(fan1Channel,255);
     }
     delay(10);
 }

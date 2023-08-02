@@ -12,7 +12,10 @@
 #define FAN2PIN    33
 #define FAN3PIN    26
 #define FAN4PIN    25
+
 #define LIGHT      12
+
+
 
 void pwmInit(void);
 
