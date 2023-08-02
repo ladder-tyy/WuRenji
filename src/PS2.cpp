@@ -16,6 +16,22 @@ boolean selectOpen = false;
 
 int joyLX, joyLY, joyRX, joyRY;
 
+void ledInit(void){
+    pinMode(RED,    OUTPUT);
+    pinMode(GREEN,  OUTPUT);
+    pinMode(BLUE,   OUTPUT);
+
+    digitalWrite(RED,HIGH);
+    delay(500);
+    digitalWrite(RED,LOW);
+    digitalWrite(GREEN,HIGH);
+    delay(500);
+    digitalWrite(GREEN,LOW);
+    digitalWrite(BLUE,HIGH);
+    delay(500);
+    digitalWrite(BLUE,LOW);
+}
+
 void ps2Init(void){
     // Attach the PS2 controller to the pins
     int error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
@@ -41,8 +57,9 @@ void ps2Deal(void *pvParameters){
             startPress = true;
             startOpen = !startOpen;
             if(startOpen == true){
-              
-            }
+                digitalWrite(GREEN,HIGH);
+            }else{digitalWrite(GREEN,LOW);}
+
             // Serial.printf("Start Key is ");
             // Serial.println(startOpen);
 

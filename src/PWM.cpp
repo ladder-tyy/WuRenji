@@ -16,11 +16,6 @@ const int fan4Freq = 1000;     //设置频率
 const int fan4Channel = 1;     //通道号，取值0 ~ 15
 const int fan4Resolution = 8;  //计数位数，取值0 ~ 20
 
-void ledInit(void){
-    pinMode(RED,    OUTPUT);
-    pinMode(GREEN,  OUTPUT);
-    pinMode(BLUE,   OUTPUT);
-}
 
 void pwmInit(void){
     ledcSetup(fan1Channel, fan1Freq, fan1Resolution);

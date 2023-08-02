@@ -13,6 +13,8 @@
 #define BLUE     4
 
 extern int joyLX, joyLY, joyRX, joyRY;
+extern boolean startOpen, selectOpen;
+
 
 void ledInit(void);
 void ps2Init(void);

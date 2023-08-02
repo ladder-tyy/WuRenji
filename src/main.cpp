@@ -5,6 +5,7 @@ void setup() {
     ps2Init();
     // imuInit();
     taskInit();
+    ledInit();
 }
 
 void loop() {
