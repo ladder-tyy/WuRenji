@@ -42,6 +42,9 @@ TaskHandle_t Tasks1_TaskHandle; // 任务句柄
 
 void taskInit(){
     xTaskCreate(task1, "task1_task",TASK1_STK_SIZE,NULL,TASK1_TASK_PRIO,NULL);
+    xTaskCreate(task1, "task1_task",TASK1_STK_SIZE,NULL,TASK1_TASK_PRIO,NULL);
+    xTaskCreate(task1, "task1_task",TASK1_STK_SIZE,NULL,TASK1_TASK_PRIO,NULL);
+
     
 }
 
