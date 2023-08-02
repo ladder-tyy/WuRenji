@@ -56,6 +56,7 @@ void taskInit(){
     xTaskCreate(imuDeal,        "task6_task",TASK6_STK_SIZE,NULL,TASK6_TASK_PRIO,NULL);
     xTaskCreate(rollPID,        "task7_task",TASK7_STK_SIZE,NULL,TASK7_TASK_PRIO,NULL);
     xTaskCreate(pitchPID,       "task8_task",TASK8_STK_SIZE,NULL,TASK8_TASK_PRIO,NULL);
+    
 }
 
 
