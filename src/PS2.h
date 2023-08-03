@@ -12,7 +12,8 @@
 #define GREEN   16
 #define BLUE     4
 
-extern int angLX, angLY, spdRY;
+extern int targetRoll, targetPitch, targetYaw;
+extern int targetPower;
 extern boolean startOpen, selectOpen;
 
 void ledInit(void);

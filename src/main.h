@@ -37,15 +37,11 @@ TaskHandle_t Tasks5_TaskHandle; // 任务句柄
 #define TASK6_STK_SIZE   2048   // 任务堆栈大小
 TaskHandle_t Tasks6_TaskHandle; // 任务句柄
 
-// roll轴PID
+// 4个fan
 #define TASK7_TASK_PRIO  1      // 任务优先级
 #define TASK7_STK_SIZE   2048   // 任务堆栈大小
 TaskHandle_t Tasks7_TaskHandle; // 任务句柄
 
-// pitch轴PID
-#define TASK8_TASK_PRIO  1      // 任务优先级
-#define TASK8_STK_SIZE   2048   // 任务堆栈大小
-TaskHandle_t Tasks8_TaskHandle; // 任务句柄
 
 void taskInit(){
     // xTaskCreate(fan1Control,    "task1_task",TASK1_STK_SIZE,NULL,TASK1_TASK_PRIO,NULL);
@@ -53,9 +49,9 @@ void taskInit(){
     // xTaskCreate(fan3Control,    "task3_task",TASK3_STK_SIZE,NULL,TASK3_TASK_PRIO,NULL);
     // xTaskCreate(fan4Control,    "task4_task",TASK4_STK_SIZE,NULL,TASK4_TASK_PRIO,NULL);
     xTaskCreate(ps2Deal,        "task5_task",TASK5_STK_SIZE,NULL,TASK5_TASK_PRIO,NULL);
-    // xTaskCreate(imuDeal,        "task6_task",TASK6_STK_SIZE,NULL,TASK6_TASK_PRIO,NULL);
-    // xTaskCreate(rollPID,        "task7_task",TASK7_STK_SIZE,NULL,TASK7_TASK_PRIO,NULL);
-    // xTaskCreate(pitchPID,       "task8_task",TASK8_STK_SIZE,NULL,TASK8_TASK_PRIO,NULL);
+    xTaskCreate(imuDeal,        "task6_task",TASK6_STK_SIZE,NULL,TASK6_TASK_PRIO,NULL);
+    xTaskCreate(fanControl,     "task7_task",TASK7_STK_SIZE,NULL,TASK7_TASK_PRIO,NULL);
+
 }
 
 

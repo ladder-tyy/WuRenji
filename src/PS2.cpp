@@ -4,8 +4,8 @@
 #define rumble      true
 
 #define MID         128
-#define ANGLE       60
-#define SPEED       2000
+#define ANGLE       30
+#define SPEED       250
 
 PS2X ps2x;
 int error = 0;
@@ -18,8 +18,9 @@ boolean startOpen = false;
 boolean selectPress = false;
 boolean selectOpen = false;
 
-int joyLX, joyLY, joyRX, joyRY;
-int angLX, angLY, spdRY;
+
+int targetRoll, targetPitch, targetYaw;
+int targetPower;
 
 void ledInit(void){
     pinMode(RED,    OUTPUT);
@@ -52,6 +53,7 @@ void ps2Init(void){
 }
 
 void ps2Deal(void *pvParameters){
+    int joyLX, joyLY, joyRX, joyRY;
     while(1){
         // Read the PS2 controller input
         ps2x.read_gamepad(false, 0);
@@ -85,14 +87,14 @@ void ps2Deal(void *pvParameters){
         joyRX = ps2x.Analog(PSS_RX) - MID;
         joyRY = -(ps2x.Analog(PSS_RY) - MID);
 
-        angLX = map(joyLX, 0, 255, 0, ANGLE);
-        angLY = map(joyLY, 0, 255, 0, ANGLE);
-        spdRY = map(joyRY, 0, 255, 0, SPEED) - 3;
+        targetRoll = map(joyLX, -127, 128, -ANGLE, ANGLE) + 1;
+        targetPitch = map(joyLY, -127, 128, -ANGLE, ANGLE) + 1;
+        targetYaw = map(joyRX, -127, 128, -ANGLE, ANGLE) + 1;
+        targetPower = map(joyRY, -127, 128, -SPEED, SPEED) + 1;
 
         // Print the joystick values
-        // Serial.print("Left Joystick (X, Y): ");Serial.print(joyLX);Serial.print(", ");Serial.print(joyLY);
-        Serial.print("Left JoyAngle (X, Y): ");Serial.print(angLX);Serial.print(", ");Serial.print(angLY);
-        Serial.print(" | Right Joystick (X, Y): ");Serial.print(joyRX);Serial.print(", ");Serial.println(spdRY);
+        // Serial.print("target(Roll, Pitch): ");Serial.print(targetRoll);Serial.print(", ");Serial.print(targetPitch);
+        // Serial.print(" | target (Yaw, Power): ");Serial.print(targetYaw);Serial.print(", ");Serial.println(targetPower);
     }
     delay(10);
 }

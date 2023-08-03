@@ -7,6 +7,7 @@ float dt;                                   //微分时间
  
 int16_t ax, ay, az, gx, gy, gz;             //加速度计陀螺仪原始数据
 float aax=0, aay=0,aaz=0, agx=0, agy=0, agz=0;    //角度变量
+
 long axo = 0, ayo = 0, azo = 0;             //加速度计偏移量
 long gxo = 0, gyo = 0, gzo = 0;             //陀螺仪偏移量
  
@@ -161,9 +162,9 @@ void imuDeal(void *pvParameters){
     
         /* kalman end */
     
-        Serial.print(agx);Serial.print(",");
-        Serial.print(agy);Serial.print(",");
-        Serial.print(agz);Serial.println();
+        // Serial.print(agx);Serial.print(",");
+        // Serial.print(agy);Serial.print(",");
+        // Serial.print(agz);Serial.println();
 
         
     }

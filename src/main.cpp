@@ -4,7 +4,7 @@ void setup() {
     Serial.begin(115200);
     pwmInit();
     ps2Init();
-    // imuInit();
+    imuInit();
     taskInit();
     ledInit();
 }
