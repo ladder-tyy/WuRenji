@@ -26,8 +26,8 @@ void fan4Control(void *pvParameters);
 
 void fanControl(void *pvParameters);
 
-double rollPID(void);
-double pitchPID(void);
+int rollPID(int target, int current);
+int pitchPID(int target, int current);
 
 
 #endif
