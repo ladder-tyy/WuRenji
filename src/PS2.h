@@ -12,6 +12,10 @@
 #define GREEN   16
 #define BLUE     4
 
+#define MID         128
+#define ANGLE       30
+#define SPEED       1000
+
 extern int targetRoll, targetPitch, targetYaw;
 extern int targetPower;
 extern boolean startOpen, selectOpen;

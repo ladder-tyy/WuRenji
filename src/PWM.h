@@ -19,11 +19,6 @@
 
 void pwmInit(void);
 
-void fan1Control(void *pvParameters);
-void fan2Control(void *pvParameters);
-void fan3Control(void *pvParameters);
-void fan4Control(void *pvParameters);
-
 void fanControl(void *pvParameters);
 
 int rollPID(int target, int current);

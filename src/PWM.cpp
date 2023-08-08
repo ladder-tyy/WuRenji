@@ -21,17 +21,20 @@ int motorPower2 = 0; // Motor 2 power (0 to 255)
 int motorPower3 = 0; // Motor 3 power (0 to 255)
 int motorPower4 = 0; // Motor 4 power (0 to 255)
 
-double rollKp = 0.05;
+double rollKp = 0.5;
 double rollKi = 0.01;
 double rollKd = 0.05;
 double prevRollError = 0.0;
 double integralRoll = 0.0;
 
-double pitchKp = 0.05;
+double pitchKp = 0.5;
 double pitchKi = 0.01;
 double pitchKd = 0.05;
 double prevPitchError = 0.0;
 double integralPitch = 0.0;
+
+int HIGH_SPEED = SPEED + 0.2 * SPEED;
+int LOW_SPEED = 0;
 
 int dataDealPWM(int amt, int low, int high){
     int outPut = ((amt)<(low)?(low):((amt)>(high)?(high):(amt)));
@@ -49,50 +52,48 @@ void pwmInit(void){
     ledcAttachPin(FAN4PIN, fan4Channel);
 }
 
-void fan1Control(void *pvParameters){
-    while(1){
-       ledcWrite(fan1Channel,255);
-    }
-    delay(10);
-}
-
-void fan2Control(void *pvParameters){
-    while(1){
-        
-    }
-    delay(10);    
-}
-
-void fan3Control(void *pvParameters){
-    while(1){
-               
-    }  
-    delay(10);   
-}
-
-void fan4Control(void *pvParameters){
-    while(1){
-    
-    } 
-    delay(10);    
-}
-
 void fanControl(void *pvParameters){
     while(1){
-        motorPower1 = dataDealPWM(targetPower + rollPID(targetRoll,agx) - pitchPID(targetPitch,agy) ,0,300);
-        motorPower2 = dataDealPWM(targetPower + rollPID(targetRoll,agx) + pitchPID(targetPitch,agy) ,0,300);
-        motorPower3 = dataDealPWM(targetPower - rollPID(targetRoll,agx) + pitchPID(targetPitch,agy) ,0,300);
-        motorPower4 = dataDealPWM(targetPower - rollPID(targetRoll,agx) - pitchPID(targetPitch,agy) ,0,300);
+        //print "1|2|3|4
 
-        // ledcWrite(fan1Channel,motorPower1);
-        // ledcWrite(fan2Channel,motorPower2);
-        // ledcWrite(fan3Channel,motorPower3);
-        // ledcWrite(fan4Channel,motorPower4);
+        //all
+        motorPower1 = dataDealPWM(targetPower + rollPID(targetRoll,agx) - pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
+        motorPower2 = dataDealPWM(targetPower + rollPID(targetRoll,agx) + pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
+        motorPower3 = dataDealPWM(targetPower - rollPID(targetRoll,agx) + pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
+        motorPower4 = dataDealPWM(targetPower - rollPID(targetRoll,agx) - pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
+
+        if(startOpen == true){
+            ledcWrite(fan1Channel, motorPower1);
+            ledcWrite(fan2Channel, motorPower2);
+            ledcWrite(fan3Channel, motorPower3);
+            ledcWrite(fan4Channel, motorPower4);
+        }
+        else{ // all data clean
+            motorPower1 = 0;
+            motorPower2 = 0;
+            motorPower3 = 0;
+            motorPower4 = 0;
+
+            prevPitchError = 0;
+            integralPitch = 0;
+            
+            prevRollError = 0;
+            integralRoll = 0;
+
+            ledcWrite(fan1Channel, 0);
+            ledcWrite(fan2Channel, 0);
+            ledcWrite(fan3Channel, 0);
+            ledcWrite(fan4Channel, 0);
+        }
 
         Serial.print("");Serial.print(motorPower1);
         Serial.print("| ");Serial.print(motorPower2);
         Serial.print("| ");Serial.print(motorPower3);
-        Serial.print("| ");Serial.println(motorPower4);
+        Serial.print("| ");Serial.print(motorPower4);
+        Serial.print("| StartOpen :");Serial.println(startOpen);
+
+
+
 
         // Serial.print("target(Roll, Pitch): ");Serial.print(targetRoll);Serial.print(", ");Serial.print(targetPitch);
         // Serial.print(" | target (Yaw, Power): ");Serial.print(targetYaw);Serial.print(", ");Serial.println(targetPower);
@@ -106,46 +107,44 @@ void fanControl(void *pvParameters){
         // Serial.print("roll PID : ");Serial.println(motorPower1);
         // Serial.print(" | pitch PID: ");Serial.println(motorPower2);
 
-
-
     } 
     delay(10);    
 }
 
 int rollPID(int target, int current){
-    double rollError = (double)target - (double)current;
+   double Error = (double)target - (double)current;
 
-    double KP = rollError * rollKp;
+    double KP = Error * rollKp;
 
-    integralRoll += rollError * rollKi;
-    if (integralRoll > target) {integralRoll = target;}
-    else if (integralRoll < -target) {integralRoll = -target;}
+    integralRoll += Error * rollKi;
+    if (integralRoll > 250) {integralRoll = 250;}
+    else if (integralRoll < -250) {integralRoll = -250;}
 
-    double KD = (rollError - prevRollError) * rollKd;
+    // double KD = (Error - prevRollError) * rollKd;
 
-    prevRollError = rollError;
+    prevRollError = Error;
 
-    double rollOutput = KP + integralRoll + KD;
+    double rollOutput = KP + integralRoll ;
 
-    // Serial.print("rollOutput : ");Serial.println(integralRoll);
+    // Serial.print("rollOutput : ");Serial.println(integralroll);
 
     return (int)rollOutput;
 }
 
 int pitchPID(int target, int current){
-    double pitchError = (double)target - (double)current;
+    double Error = (double)target - (double)current;
 
-    double KP = pitchError * pitchKp;
+    double KP = Error * pitchKp;
 
-    integralPitch += pitchError * pitchKi;
+    integralPitch += Error * pitchKi;
     if (integralPitch > 250) {integralPitch = 250;}
     else if (integralPitch < -250) {integralPitch = -250;}
 
-    double KD = (pitchError - prevPitchError) * pitchKd;
+    // double KD = (Error - prevPitchError) * pitchKd;
 
-    prevPitchError = pitchError;
+    prevPitchError = Error;
 
-    double pitchOutput = KP + integralPitch + KD;
+    double pitchOutput = KP + integralPitch ;
 
     // Serial.print("pitchOutput : ");Serial.println(integralPitch);
 

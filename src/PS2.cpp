@@ -3,9 +3,6 @@
 #define pressures   true
 #define rumble      true
 
-#define MID         128
-#define ANGLE       30
-#define SPEED       250
 
 PS2X ps2x;
 int error = 0;
