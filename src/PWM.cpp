@@ -86,11 +86,11 @@ void fanControl(void *pvParameters){
             ledcWrite(fan4Channel, 0);
         }
 
-        Serial.print("");Serial.print(motorPower1);
-        Serial.print("| ");Serial.print(motorPower2);
-        Serial.print("| ");Serial.print(motorPower3);
-        Serial.print("| ");Serial.print(motorPower4);
-        Serial.print("| StartOpen :");Serial.println(startOpen);
+        // Serial.print("");Serial.print(motorPower1);
+        // Serial.print("| ");Serial.print(motorPower2);
+        // Serial.print("| ");Serial.print(motorPower3);
+        // Serial.print("| ");Serial.print(motorPower4);
+        // Serial.print("| StartOpen :");Serial.println(startOpen);
 
 
 
@@ -98,9 +98,9 @@ void fanControl(void *pvParameters){
         // Serial.print("target(Roll, Pitch): ");Serial.print(targetRoll);Serial.print(", ");Serial.print(targetPitch);
         // Serial.print(" | target (Yaw, Power): ");Serial.print(targetYaw);Serial.print(", ");Serial.println(targetPower);
 
-        // Serial.print(agx);Serial.print(",");
-        // Serial.print(agy);Serial.print(",");
-        // Serial.print(agz);Serial.println();
+        Serial.print(agx);Serial.print(",");
+        Serial.print(agy);Serial.print(",");
+        Serial.print(agz);Serial.println();
 
         // motorPower1 = rollPID(targetRoll,currentRoll);
         // motorPower2 = pitchPID(100,motorPower2);
@@ -108,7 +108,7 @@ void fanControl(void *pvParameters){
         // Serial.print(" | pitch PID: ");Serial.println(motorPower2);
 
     } 
-    delay(10);    
+    delay(5);    
 }
 
 int rollPID(int target, int current){
