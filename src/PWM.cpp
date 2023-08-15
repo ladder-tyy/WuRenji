@@ -92,14 +92,11 @@ void fanControl(void *pvParameters){
         // Serial.print("| ");Serial.print(motorPower4);
         // Serial.print("| StartOpen :");Serial.println(startOpen);
 
-
-
-
         // Serial.print("target(Roll, Pitch): ");Serial.print(targetRoll);Serial.print(", ");Serial.print(targetPitch);
         // Serial.print(" | target (Yaw, Power): ");Serial.print(targetYaw);Serial.print(", ");Serial.println(targetPower);
 
-        Serial.print(agx);Serial.print(",");
-        Serial.print(agy);Serial.print(",");
+        Serial.print(agx - 0.8);Serial.print(",");
+        Serial.print(agy - 2.5);Serial.print(",");
         Serial.print(agz);Serial.println();
 
         // motorPower1 = rollPID(targetRoll,currentRoll);
