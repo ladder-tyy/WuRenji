@@ -1,5 +1,5 @@
-#include <MPU6050.h>
 #include <Wire.h>
+#include <MPU6050.h>
 
 #ifndef __IMU_H__
 #define __IMU_H__

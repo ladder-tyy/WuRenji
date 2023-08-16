@@ -3,7 +3,7 @@
 void setup() {
     Serial.begin(115200);
     pwmInit();
-    // ps2Init();
+    ps2Init();
     imuInit();
     taskInit();
     ledInit();

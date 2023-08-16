@@ -30,8 +30,8 @@ void imuInit(void){
     while (!Serial)
     delay(10); // Wait for serial monitor to open
     Wire.begin();
+    
     // Initialize the MPU6050
-
     mpu.initialize();
     mpu.testConnection();
 
@@ -55,15 +55,14 @@ void imuDeal(void *pvParameters){
         lastTime = now;                           //上一次采样时间(ms)
     
         mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz); 
-
         float accx = ax / AcceRatio;              //x轴加速度
         float accy = ay / AcceRatio;              //y轴加速度
         float accz = az / AcceRatio;              //z轴加速度
-    
+        
         aax = atan(accy / accz) * (-RadinToAngle);    //y轴对于z轴的夹角
         aay = atan(accx / accz) * RadinToAngle;       //x轴对于z轴的夹角
         aaz = atan(accz / accy) * RadinToAngle;       //z轴对于y轴的夹角
-    
+
         aax_sum = 0;                              // 对于加速度计原始数据的滑动加权滤波算法
         aay_sum = 0;
         aaz_sum = 0;
@@ -95,7 +94,7 @@ void imuDeal(void *pvParameters){
         agx += gyrox;                             //x轴角速度积分
         agy += gyroy;                             //y轴角速度积分
         agz += gyroz;
-        
+
         /* kalman start */
         Sx = 0; Rx = 0;
         Sy = 0; Ry = 0;

@@ -54,13 +54,17 @@ void pwmInit(void){
 
 void fanControl(void *pvParameters){
     while(1){
+        float currentRoll     = agx - 0.8;
+        float currentPitch    = agy - 2.5;
+        float currentYaw      = agz;
+
         //print "1|2|3|4
 
         //all
-        motorPower1 = dataDealPWM(targetPower + rollPID(targetRoll,agx) - pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
-        motorPower2 = dataDealPWM(targetPower + rollPID(targetRoll,agx) + pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
-        motorPower3 = dataDealPWM(targetPower - rollPID(targetRoll,agx) + pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
-        motorPower4 = dataDealPWM(targetPower - rollPID(targetRoll,agx) - pitchPID(targetPitch,agy) ,LOW_SPEED, HIGH_SPEED);
+        motorPower1 = dataDealPWM(targetPower + rollPID(targetRoll,currentRoll) - pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
+        motorPower2 = dataDealPWM(targetPower + rollPID(targetRoll,currentRoll) + pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
+        motorPower3 = dataDealPWM(targetPower - rollPID(targetRoll,currentRoll) + pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
+        motorPower4 = dataDealPWM(targetPower - rollPID(targetRoll,currentRoll) - pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
 
         if(startOpen == true){
             ledcWrite(fan1Channel, motorPower1);
@@ -95,9 +99,9 @@ void fanControl(void *pvParameters){
         // Serial.print("target(Roll, Pitch): ");Serial.print(targetRoll);Serial.print(", ");Serial.print(targetPitch);
         // Serial.print(" | target (Yaw, Power): ");Serial.print(targetYaw);Serial.print(", ");Serial.println(targetPower);
 
-        Serial.print(agx - 0.8);Serial.print(",");
-        Serial.print(agy - 2.5);Serial.print(",");
-        Serial.print(agz);Serial.println();
+        // Serial.print((int)currentRoll);Serial.print(",");
+        // Serial.print((int)currentPitch);Serial.print(",");
+        // Serial.print((int)currentYaw);Serial.println();
 
         // motorPower1 = rollPID(targetRoll,currentRoll);
         // motorPower2 = pitchPID(100,motorPower2);
