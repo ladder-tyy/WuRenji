@@ -54,10 +54,6 @@ void pwmInit(void){
 
 void fanControl(void *pvParameters){
     while(1){
-        float currentRoll     = agx - 0.8;
-        float currentPitch    = agy - 2.5;
-        float currentYaw      = agz;
-
         //print "1|2|3|4
 
         //all
