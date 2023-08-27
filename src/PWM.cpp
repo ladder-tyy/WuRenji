@@ -23,15 +23,18 @@ int motorPower4 = 0; // Motor 4 power (0 to 255)
 
 double rollKp = 0.5;
 double rollKi = 0.01;
-double rollKd = 0.05;
 double prevRollError = 0.0;
 double integralRoll = 0.0;
 
 double pitchKp = 0.5;
 double pitchKi = 0.01;
-double pitchKd = 0.05;
 double prevPitchError = 0.0;
 double integralPitch = 0.0;
+
+double yawKp = 0.5;
+double yawKi = 0.01;
+double prevYawError = 0.0;
+double integralYaw = 0.0;
 
 int HIGH_SPEED = SPEED + 0.2 * SPEED;
 int LOW_SPEED = 0;
@@ -57,10 +60,10 @@ void fanControl(void *pvParameters){
         //print "1|2|3|4
 
         //all
-        motorPower1 = dataDealPWM(targetPower + rollPID(targetRoll,currentRoll) - pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
-        motorPower2 = dataDealPWM(targetPower + rollPID(targetRoll,currentRoll) + pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
-        motorPower3 = dataDealPWM(targetPower - rollPID(targetRoll,currentRoll) + pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
-        motorPower4 = dataDealPWM(targetPower - rollPID(targetRoll,currentRoll) - pitchPID(targetPitch,currentPitch) ,LOW_SPEED, HIGH_SPEED);
+        motorPower1 = dataDealPWM(targetPower + rollPID(targetRoll,currentRoll) - pitchPID(targetPitch,currentPitch) - yawPID(targetYaw,currentYaw) ,LOW_SPEED, HIGH_SPEED);
+        motorPower2 = dataDealPWM(targetPower + rollPID(targetRoll,currentRoll) + pitchPID(targetPitch,currentPitch) - yawPID(targetYaw,currentYaw) ,LOW_SPEED, HIGH_SPEED);
+        motorPower3 = dataDealPWM(targetPower - rollPID(targetRoll,currentRoll) + pitchPID(targetPitch,currentPitch) + yawPID(targetYaw,currentYaw) ,LOW_SPEED, HIGH_SPEED);
+        motorPower4 = dataDealPWM(targetPower - rollPID(targetRoll,currentRoll) - pitchPID(targetPitch,currentPitch) + yawPID(targetYaw,currentYaw) ,LOW_SPEED, HIGH_SPEED);
 
         if(startOpen == true){
             ledcWrite(fan1Channel, motorPower1);
@@ -86,11 +89,11 @@ void fanControl(void *pvParameters){
             ledcWrite(fan4Channel, 0);
         }
 
-        // Serial.print("");Serial.print(motorPower1);
-        // Serial.print("| ");Serial.print(motorPower2);
-        // Serial.print("| ");Serial.print(motorPower3);
-        // Serial.print("| ");Serial.print(motorPower4);
-        // Serial.print("| StartOpen :");Serial.println(startOpen);
+        Serial.print("");Serial.print(motorPower1);
+        Serial.print("| ");Serial.print(motorPower2);
+        Serial.print("| ");Serial.print(motorPower3);
+        Serial.print("| ");Serial.print(motorPower4);
+        Serial.print("| StartOpen :");Serial.println(startOpen);
 
         // Serial.print("target(Roll, Pitch): ");Serial.print(targetRoll);Serial.print(", ");Serial.print(targetPitch);
         // Serial.print(" | target (Yaw, Power): ");Serial.print(targetYaw);Serial.print(", ");Serial.println(targetPower);
@@ -117,13 +120,9 @@ int rollPID(int target, int current){
     if (integralRoll > 250) {integralRoll = 250;}
     else if (integralRoll < -250) {integralRoll = -250;}
 
-    // double KD = (Error - prevRollError) * rollKd;
-
     prevRollError = Error;
 
     double rollOutput = KP + integralRoll ;
-
-    // Serial.print("rollOutput : ");Serial.println(integralroll);
 
     return (int)rollOutput;
 }
@@ -134,17 +133,28 @@ int pitchPID(int target, int current){
     double KP = Error * pitchKp;
 
     integralPitch += Error * pitchKi;
-    if (integralPitch > 250) {integralPitch = 250;}
+    if (integralPitch > 250) {integralPitch = 250;}           //积分限幅
     else if (integralPitch < -250) {integralPitch = -250;}
-
-    // double KD = (Error - prevPitchError) * pitchKd;
 
     prevPitchError = Error;
 
     double pitchOutput = KP + integralPitch ;
 
-    // Serial.print("pitchOutput : ");Serial.println(integralPitch);
-
     return (int)pitchOutput;
 }
 
+int yawPID(int target, int current){
+    double Error = (double)target - (double)current;
+
+    double KP = Error * yawKp;
+
+    integralYaw += Error * yawKi;         
+    if (integralYaw > 250) {integralYaw = 250;}           //积分限幅
+    else if (integralYaw < -250) {integralYaw = -250;}
+
+    prevYawError = Error;
+
+    double yawOutput = KP + integralYaw ;
+
+    return (int)yawOutput;
+}

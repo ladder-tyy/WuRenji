@@ -23,6 +23,6 @@ void fanControl(void *pvParameters);
 
 int rollPID(int target, int current);
 int pitchPID(int target, int current);
-
+int yawPID(int target, int current);
 
 #endif

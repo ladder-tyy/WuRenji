@@ -6,7 +6,7 @@ unsigned long lastTime, now;
 
 int16_t ax, ay, az, gx, gy, gz;
 
-float aax=0, aay=0, aaz=0;
+float aax=0, aay=0, aaz=0;                                  //加速度变量
 float agx=0, agy=0, agz=0;                                  //角度变量
 
 long ax0 = 0, ay0 = 0, az0 = 0;                             //加速度计偏移量
@@ -26,7 +26,9 @@ float Px=1, Rx, Kx, Sx, Vx, Qx;                             //x轴卡尔曼变�
 float Py=1, Ry, Ky, Sy, Vy, Qy;                             //y轴卡尔曼变量
 float Pz=1, Rz, Kz, Sz, Vz, Qz;                             //z轴卡尔曼变量
 
-float currentRoll, currentPitch, currentYaw;
+float currentRoll, currentPitch, currentYaw;                //当前姿态角度
+
+boolean imuDataInitTrue = false;                            //IMU数据初始化
 
 void imuInit(void){
     while (!Serial)
@@ -36,22 +38,18 @@ void imuInit(void){
     // Initialize the MPU6050
     mpu.initialize();
     mpu.testConnection();
-
-    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz); 
-
-    unsigned short times = 200;             //采样次数
-    for(int i=0;i<times;i++)
-    {
-        ax0 += ax; ay0 += ay; az0 += az;
-        gx0 += gx; gy0 += gy; gz0 += gz;
-    }
-    ax0 /= times; ay0 /= times; az0 /= times; //计算加速度计偏移
-    gx0 /= times; gy0 /= times; gz0 /= times; //计算陀螺仪偏移
-
+    imuDataInit();
 }
 
 void imuDeal(void *pvParameters){
     while(1){
+        if(startOpen == true && imuDataInitTrue == false){
+            imuDataInit();
+            imuDataInitTrue = true;
+        }
+        else if(startOpen == false){
+            imuDataInitTrue = false;
+        }
         now = millis();                                 //当前时间(ms)
         float dt = (now - lastTime) / 1000.0;           //微分时间(s)
         lastTime = now;                                 //上一次采样时间(ms)
@@ -94,7 +92,7 @@ void imuDeal(void *pvParameters){
 
         agx += gyrox;                               //x轴角速度积分
         agy += gyroy;                               //y轴角速度积分
-        agz += gyroz;
+        agz += gyroz - 0.00000017;
 
         /* kalman start */
         Sx = 0; Rx = 0;
@@ -140,10 +138,10 @@ void imuDeal(void *pvParameters){
         agy = agy + Ky * (aay - agy); 
         Py = (1 - Ky) * Py;
     
-        Pz = Pz + 0.0025;
-        Kz = Pz / (Pz + Rz);
-        agz = agz + Kz * (aaz - agz); 
-        Pz = (1 - Kz) * Pz;
+        // Pz = Pz + 0.0025;
+        // Kz = Pz / (Pz + Rz);
+        // agz = agz + Kz * (aaz - agz); 
+        // Pz = (1 - Kz) * Pz;
     
         if(agx > 180){agx -= 180;}
         else if(agx < -180){agx += 180;}
@@ -160,11 +158,24 @@ void imuDeal(void *pvParameters){
         currentPitch    = agy - 2.5;
         currentYaw      = agz;
 
-        Serial.print((int)currentRoll);Serial.print(",");
-        Serial.print((int)currentPitch);Serial.print(",");
-        Serial.print((int)currentYaw);Serial.println();
+        // Serial.print((int)currentRoll);Serial.print(",");
+        // Serial.print((int)currentPitch);Serial.print(",");
+        // Serial.print((int)currentYaw);Serial.println();
 
         
     }
     delay(5);
+}
+
+void imuDataInit(void){
+    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz); 
+
+    unsigned short times = 200;             //采样次数
+    for(int i=0;i<times;i++)
+    {
+        ax0 += ax; ay0 += ay; az0 += az;
+        gx0 += gx; gy0 += gy; gz0 += gz;
+    }
+    ax0 /= times; ay0 /= times; az0 /= times; //计算加速度计偏移
+    gx0 /= times; gy0 /= times; gz0 /= times; //计算陀螺仪偏移
 }
